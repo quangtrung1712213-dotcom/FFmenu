@@ -1,0 +1,20 @@
+name: Build FF Menu Tweak
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Theos
+        run: |
+          git clone --recursive https://github.com/theos/theos.git $HOME/theos
+          echo "$HOME/theos/bin" >> $GITHUB_PATH
+      - name: Build Tweak
+        run: |
+          make package FINALPACKAGE=1
+      - name: Upload Dylib
+        uses: actions/upload-artifact@v3
+        with:
+          name: FFMenu-Dylib
+          path: .theos/obj/debug/*.dylib
